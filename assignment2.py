@@ -69,14 +69,108 @@ indicators_of_interest = ['Urban population (% of total population)',
                           'Population, total', 'Arable land (% of land area)',
                           'Forest area (% of land area)', 'CO2 emissions (kt)',
                           'Electric power consumption (kWh per capita)']
-countries_of_interest.describe()
+print(countries_of_interest.describe())
 
 # Skewness
 skewness = stats.skew(countries_of_interest.loc['1965':'2022']['China']
                       ['Population growth (annual %)'])
-print(skewness)
+print(f'Skewness: \n {skewness}')
 
 # Kurtosis
 kurtosis = stats.kurtosis(countries_of_interest.loc['1965':'2022']['China']
                           ['Population growth (annual %)'])
-print(kurtosis)
+print(f'Kurtosis: \n {kurtosis}')
+
+# Population, total bar plot
+canada_pop = (countries_of_interest.loc['1992':'2023':6]['Canada']
+              ['Population, total'])
+india_pop = (countries_of_interest.loc['1992':'2023':6]['India']
+             ['Population, total'])
+china_pop = (countries_of_interest.loc['1992':'2023':6]['China']
+             ['Population, total'])
+us_pop = (countries_of_interest.loc['1992':'2023':6]['United States']
+          ['Population, total'])
+eu_pop = (countries_of_interest.loc['1992':'2023':6]['European Union']
+          ['Population, total'])
+bar_df = {'Canada': canada_pop, 'India': india_pop, 'China': china_pop,
+          'USA': us_pop, 'European Union': eu_pop}
+
+fig, ax = plt.subplots(layout='constrained')
+
+x = np.arange(len(np.arange(1992, 2023, 6)))  # the label locations
+width = 0.15  # the width of the bars
+multiplier = 0
+print(bar_df.items())
+for attribute, measurement in bar_df.items():
+    offset = width * multiplier
+    rects = ax.bar(x + offset, measurement, width, label=attribute)
+    multiplier += 1
+ax.set_ylabel('Population')
+ax.set_xlabel('Years')
+# ax.set_yscale('log')
+ax.set_title('Population total')
+ax.set_xticks(x + width, np.arange(1992, 2023, 6))
+ax.legend(loc='upper left', ncols=3)
+plt.savefig('Pop_bar.png')
+plt.show()
+
+# CO2 emissions bar plot
+canada_pop = (countries_of_interest.loc['1992':'2023':6]['Canada']
+              ['CO2 emissions (kt)'])
+india_pop = (countries_of_interest.loc['1992':'2023':6]['India']
+             ['CO2 emissions (kt)'])
+china_pop = (countries_of_interest.loc['1992':'2023':6]['China']
+             ['CO2 emissions (kt)'])
+us_pop = (countries_of_interest.loc['1992':'2023':6]['United States']
+          ['CO2 emissions (kt)'])
+eu_pop = (countries_of_interest.loc['1992':'2023':6]['European Union']
+          ['CO2 emissions (kt)'])
+bar_df = {'Canada': canada_pop, 'India': india_pop, 'China': china_pop,
+          'USA': us_pop, 'EU': eu_pop}
+
+fig, ax = plt.subplots(layout='constrained')
+
+x = np.arange(len(np.arange(1992, 2023, 6)))  # the label locations
+width = 0.15  # the width of the bars
+multiplier = 0
+
+for attribute, measurement in bar_df.items():
+    offset = width * multiplier
+    rects = ax.bar(x + offset, measurement, width, label=attribute)
+    multiplier += 1
+ax.set_ylabel('CO2')
+ax.set_xlabel('Years')
+# ax.set_yscale('log')
+ax.set_title('CO2 emissions (kt)')
+ax.set_xticks(x + width, np.arange(1992, 2023, 6))
+ax.legend(loc='upper left', ncols=3)
+plt.savefig('CO2_bar.png')
+plt.show()
+
+# Correlation heatmap for China
+china_df = (countries_of_interest.loc['1992':'2022']['China']
+            [['Urban population (% of total population)', 'Population, total',
+              'Arable land (% of land area)', 'Forest area (% of land area)',
+              'CO2 emissions (kt)',
+              'Electric power consumption (kWh per capita)']])
+print(china_df.corr())
+
+# Call the heatmap function
+map_corr(china_df, 7, 'cividis', 'China')
+
+# Correlation heatmap for EU
+eu_df = (countries_of_interest.loc['1992':'2022']['European Union']
+         [indicators_of_interest])
+
+# Create a correlation
+print(eu_df.corr())
+
+# Call the mapping function
+map_corr(eu_df, 7, 'bone_r', 'European Union')
+
+# Correlation heat map for United States
+us_df = (countries_of_interest.loc['1992':'2023']['United States']
+         [indicators_of_interest])
+print(us_df.corr())
+# Call the mapper
+map_corr(us_df, 7, 'coolwarm', 'USA')
