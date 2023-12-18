@@ -174,3 +174,55 @@ us_df = (countries_of_interest.loc['1992':'2023']['United States']
 print(us_df.corr())
 # Call the mapper
 map_corr(us_df, 7, 'coolwarm', 'USA')
+
+# Table for Electric power consumption
+ec_df = (countries_of_interest.xs(
+    'Electric power consumption (kWh per capita)', level='Indicator Name',
+    axis=1, drop_level=False).loc['1992':'2022':6])
+ec_df.rename(columns={'Electric power consumption (kWh per capita)': 'EPC'},
+             inplace=True)
+ec_df = ec_df.round(2)
+# Create a figure and axis
+fig, ax = plt.subplots(figsize=(20, 6), dpi=200)
+fig
+
+# Hide the axes
+ax.axis('off')
+
+# Plot the table
+table = (ax.table(cellText=ec_df.values, rowLabels=ec_df.index,
+                  colLabels=ec_df.columns, cellLoc='center', loc='center',
+                  colWidths=[0.07 for x in ec_df.columns], bbox=[0, 0, 1, 1]))
+table.auto_set_font_size(False)
+table.set_fontsize(12)
+# Save the table as an image
+plt.savefig('urban_population_table.png', bbox_inches='tight')
+
+# Show the plot (optional)
+plt.show()
+
+# Arable land % plot
+arable_df = (countries_of_interest.xs('Arable land (% of land area)',
+                                      level='Indicator Name', axis=1,
+                                      drop_level=False).loc['1992':'2022'])
+print(f'Arable land: \n {arable_df}')
+arable_df.plot()
+plt.legend(labels=['Canada', 'India', 'China', 'USA', 'EU'])
+plt.ylim(0, 80)
+plt.xlabel('Years')
+plt.ylabel('Land (%)')
+plt.tight_layout()
+plt.savefig('arable.png')
+
+# Forest area % plot
+forest_df = (countries_of_interest.xs('Forest area (% of land area)',
+                                      level='Indicator Name', axis=1,
+                                      drop_level=False).loc['1992':'2022'])
+print(f'Forest land: \n {forest_df}')
+forest_df.plot(style='--')
+plt.legend(labels=['Canada', 'India', 'China', 'USA', 'EU'])
+plt.ylim(0, 80)
+plt.xlabel('Years')
+plt.ylabel('Land (%)')
+plt.tight_layout()
+plt.savefig('forest_area.png')
