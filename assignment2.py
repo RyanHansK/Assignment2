@@ -63,7 +63,7 @@ def bar_plotter(df, title=''):
     print(bar_df.items())
     for attribute, measurement in bar_df.items():
         offset = width * multiplier
-        rects = ax.bar(x + offset, measurement, width, label=attribute)
+        ax.bar(x + offset, measurement, width, label=attribute)
         multiplier += 1
     ax.set_ylabel('Population')
     ax.set_xlabel('Years')
