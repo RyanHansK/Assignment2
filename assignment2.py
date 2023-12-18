@@ -54,6 +54,27 @@ def map_corr(df, size=6, cmap='viridis', title=None):
     plt.savefig(f'{title}_heatmap.png', bbox_inches='tight', dpi=200)
 
 
+def bar_plotter(df, title=''):
+    fig, ax = plt.subplots(layout='constrained')
+
+    x = np.arange(len(np.arange(1992, 2023, 6)))  # the label locations
+    width = 0.15  # the width of the bars
+    multiplier = 0
+    print(bar_df.items())
+    for attribute, measurement in bar_df.items():
+        offset = width * multiplier
+        rects = ax.bar(x + offset, measurement, width, label=attribute)
+        multiplier += 1
+    ax.set_ylabel('Population')
+    ax.set_xlabel('Years')
+    # ax.set_yscale('log')
+    ax.set_title(title)
+    ax.set_xticks(x + width, np.arange(1992, 2023, 6))
+    ax.legend(loc='upper left', ncols=3)
+    plt.savefig(f'{title}_bar.png')
+    plt.show()
+
+
 # Calling the main function to read the file
 countries_df, years_df = read_and_process('climate.csv')
 
@@ -94,25 +115,8 @@ eu_pop = (countries_of_interest.loc['1992':'2023':6]['European Union']
           ['Population, total'])
 bar_df = {'Canada': canada_pop, 'India': india_pop, 'China': china_pop,
           'USA': us_pop, 'European Union': eu_pop}
-
-fig, ax = plt.subplots(layout='constrained')
-
-x = np.arange(len(np.arange(1992, 2023, 6)))  # the label locations
-width = 0.15  # the width of the bars
-multiplier = 0
-print(bar_df.items())
-for attribute, measurement in bar_df.items():
-    offset = width * multiplier
-    rects = ax.bar(x + offset, measurement, width, label=attribute)
-    multiplier += 1
-ax.set_ylabel('Population')
-ax.set_xlabel('Years')
-# ax.set_yscale('log')
-ax.set_title('Population total')
-ax.set_xticks(x + width, np.arange(1992, 2023, 6))
-ax.legend(loc='upper left', ncols=3)
-plt.savefig('Pop_bar.png')
-plt.show()
+# Call the bar plot function
+bar_plotter(bar_df, 'Population total')
 
 # CO2 emissions bar plot
 canada_pop = (countries_of_interest.loc['1992':'2023':6]['Canada']
@@ -127,25 +131,8 @@ eu_pop = (countries_of_interest.loc['1992':'2023':6]['European Union']
           ['CO2 emissions (kt)'])
 bar_df = {'Canada': canada_pop, 'India': india_pop, 'China': china_pop,
           'USA': us_pop, 'EU': eu_pop}
-
-fig, ax = plt.subplots(layout='constrained')
-
-x = np.arange(len(np.arange(1992, 2023, 6)))  # the label locations
-width = 0.15  # the width of the bars
-multiplier = 0
-
-for attribute, measurement in bar_df.items():
-    offset = width * multiplier
-    rects = ax.bar(x + offset, measurement, width, label=attribute)
-    multiplier += 1
-ax.set_ylabel('CO2')
-ax.set_xlabel('Years')
-# ax.set_yscale('log')
-ax.set_title('CO2 emissions (kt)')
-ax.set_xticks(x + width, np.arange(1992, 2023, 6))
-ax.legend(loc='upper left', ncols=3)
-plt.savefig('CO2_bar.png')
-plt.show()
+# Call the bar plot function
+bar_plotter(bar_df, 'CO2 emissions (kt)')
 
 # Correlation heatmap for China
 china_df = (countries_of_interest.loc['1992':'2022']['China']
